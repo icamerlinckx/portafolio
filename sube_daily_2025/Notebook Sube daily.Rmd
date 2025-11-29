@@ -1,0 +1,46 @@
+---
+title: "Analisis de viajes con SUBE en AMBA 2025"
+author: Ismael
+output: html_notebook
+---
+
+### Elegimos las librerias para trabajar
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+### Importamos el dataset y lo converimos a tibble para ver la estructura de datos con glimpse
+
+```{r}
+df <- read.csv("sube_daily_2025/dat-ab-usos-2025.csv") %>% as.tibble()
+glimpse(df)
+```
+
+### Modificamos el tipos de datos para poder avanzar con el analisis
+
+```{r}
+df <- df %>%
+  mutate(
+    FECHA = as.Date(DIA_TRANSPORTE),        # convierte a fecha
+    NOMBRE_EMPRESA = as.factor(NOMBRE_EMPRESA),      # factor (categoría)
+    LINEA          = as.character(LINEA),            # mantener como texto
+    AMBA           = AMBA == "SI",                   # lógico TRUE/FALSE
+    TIPO_TRANSPORTE = as.factor(TIPO_TRANSPORTE),    # factor
+    JURISDICCION   = as.factor(JURISDICCION),        # factor
+    PROVINCIA      = as.factor(PROVINCIA),           # factor
+    MUNICIPIO      = as.factor(MUNICIPIO),           # factor
+   
+  ) %>% 
+  select(FECHA, everything()) %>% 
+  select(- DIA_TRANSPORTE)
+
+glimpse(df)
+```
+
+### Hacemos un summary para ver el resumen de cada columna
+
+```{r}
+summary(df)
+```
